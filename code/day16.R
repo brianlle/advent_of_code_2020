@@ -19,9 +19,9 @@ rules$num2 <- gsub(".*-", "", rules$range1)
 rules$num3 <- gsub("-.*", "", rules$range2)
 rules$num4 <- gsub(".*-", "", rules$range2)
 
+#extract ranges of valid numbers for each rule
 range <- list()
 all_rules <- c()
-
 for (i in 1:nrow(rules)){
   range[[i]] <- c(as.numeric(rules$num1[i]):as.numeric(rules$num2[i]),
                       as.numeric(rules$num3[i]):as.numeric(rules$num4[i]))
@@ -96,12 +96,10 @@ for (i in 1:20){ # remove initailization value
 }
 
 # rules can have multiple fields that match, but appears to be a simple process of elim puzzle
-
 field_match <- c() #rule fields: e.g. rule 1, rule 2, rule 3
 ticket_match <- c() #ticdket fields: e.g. 1st number, 2nd number, 3rd number
 
-for (k in 1:20){
-  #print(k)
+for (k in 1:20){ # repeat 20 times total
   for (i in 1:20){ #i is rule row; possible_fields is what ticket fields are possible for that row
     if (length(possible_fields[[i]]) == 1){
       field_found <- possible_fields[[i]]
@@ -114,20 +112,14 @@ for (k in 1:20){
       break
     }
   }
-  print(paste(field_match[k], ticket_match[k]))
 }
 
 rule_names <- rules[1:20,3]
 rules_df <- data.frame(rule_name = rule_names, rule_num = 1:20)
 match_df <- data.frame(rule_num = field_match, ticket_field = ticket_match)
-
 match_df <- merge(rules_df, match_df, by = "rule_num")
 
 dep_fields <- match_df[1:6, 3] # departure fields are 1st 6 rows, so get matching ticket fields
 
 my_ticket_fields <- my_ticket[dep_fields]
 print(prod(as.numeric(my_ticket_fields)), digits = 20)
-
-### 28790170084515840 - was wrong
-### 5977293343129
-### 7225585753519350 - too high
